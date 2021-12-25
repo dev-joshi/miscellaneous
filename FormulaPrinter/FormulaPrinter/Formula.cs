@@ -12,7 +12,7 @@ namespace FormulaPrinter
             this.formula = formula;
         }
 
-        public string Print(float startX, float incX, int iX, float startY, float incY, int iY)
+        public string Print(float startX, float incX, int iX, IncrementType incTypeX, float startY, float incY, int iY, IncrementType incTypeY)
         {
             var sb = new StringBuilder();
 
@@ -26,7 +26,7 @@ namespace FormulaPrinter
             for (j = 0; j < iY; j++)
             {
                 sb.Append(string.Format($"{y:00.000}") + "  ");
-                y += incY;
+                y = Increment(y, incY, incTypeY);
             }
 
             sb.Append("\n\n");
@@ -39,15 +39,28 @@ namespace FormulaPrinter
                 for (j = 0; j < iY; j++)
                 {
                     sb.Append(Calculate(x, y) + "  ");
-                    y += incY;
+                    y = Increment(y, incY, incTypeY);
                 }
 
                 sb.Append("\n");
                 y = startY;
-                x += incX;
+                x = Increment(x, incX, incTypeX);
             }
 
             return sb.ToString();
+        }
+
+        private float Increment(float val, float inc, IncrementType incType)
+        {
+            switch(incType)
+            {
+                case IncrementType.Linear:
+                    return val += inc;
+                case IncrementType.Exponential:
+                    return val *= inc;
+            }
+
+            return val;
         }
 
         private string Calculate(float x, float y)
@@ -65,5 +78,11 @@ namespace FormulaPrinter
 
             return ans;
         }
+    }
+
+    public enum IncrementType
+    {
+        Linear,
+        Exponential
     }
 }

@@ -15,19 +15,20 @@ namespace FormulaPrinter
         {
             Console.WriteLine("Welcome to 2 variable formula printer!");
 
-            var f = new Formula(result);
-
             float startX, incX, startY, incY;
             int iX, iY;
+            bool isLinearX, isLinearY;
 
-            if (args.Length < 6)
+            if (args.Length < 8)
             {
                 if(!GetInput("starting point of X", out startX)
                     || !GetInput("increment in X", out incX)
                     || !GetInput("iterations of X", out iX)
+                    || !GetInput("increment in X is linear (True/False)", out isLinearX)
                     || !GetInput("starting point of Y", out startY)
                     || !GetInput("increment in Y", out incY)
-                    || !GetInput("iterations of Y", out iY))
+                    || !GetInput("iterations of Y", out iY)
+                    || !GetInput("increment in Y is linear (True/False)", out isLinearY))
                 {
                     return;
                 }
@@ -37,15 +38,22 @@ namespace FormulaPrinter
                 if(!ValidateInput(args[0], out startX)
                     || !ValidateInput(args[1], out incX)
                     || !ValidateInput(args[2], out iX)
-                    || !ValidateInput(args[3], out startY)
-                    || !ValidateInput(args[4], out incY)
-                    || !ValidateInput(args[5], out iY))
+                    || !ValidateInput(args[3], out isLinearX)
+                    || !ValidateInput(args[4], out startY)
+                    || !ValidateInput(args[5], out incY)
+                    || !ValidateInput(args[6], out iY)
+                    || !ValidateInput(args[7], out isLinearY))
                 {
                     return;
                 }
             }
 
-            Console.WriteLine(f.Print(startX, incX, iX, startY, incY, iY));
+            Console.WriteLine(
+                new Formula(result)
+                .Print(
+                    startX, incX, iX, isLinearX ? IncrementType.Linear : IncrementType.Exponential,
+                    startY, incY, iY, isLinearY ? IncrementType.Linear : IncrementType.Exponential));
+
             Console.ReadKey();
         }
 
